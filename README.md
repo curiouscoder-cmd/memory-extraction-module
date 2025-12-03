@@ -2,6 +2,15 @@
 
 A simple web app that extracts user memories from chat messages and applies different personality tones to AI responses.
 
+⚠️ Deployment Note
+
+This project is hosted on Render’s free tier.
+If the backend has been idle for a while, Render puts the server to sleep.
+When it wakes up, the first request may take 20–30 seconds to load.
+After the initial spin-up, everything works normally.
+
+A background uptime monitor keeps the service warm, but occasional delays are still expected on the free tier.
+
 ## What it does
 
 1. **Memory Extraction** - Give it 30 chat messages and it pulls out:
