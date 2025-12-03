@@ -87,10 +87,19 @@ Only return the JSON, nothing else."""
     if result:
         # try to parse the json
         import json
+        import re
         try:
-            parsed = json.loads(result)
+            # remove markdown code blocks if present
+            clean_result = result.strip()
+            if clean_result.startswith("```"):
+                clean_result = re.sub(r'^```json?\s*', '', clean_result)
+                clean_result = re.sub(r'\s*```$', '', clean_result)
+            
+            parsed = json.loads(clean_result)
             return jsonify(parsed)
-        except:
+        except Exception as e:
+            print(f"JSON parse error: {e}")
+            print(f"Raw result: {result}")
             return jsonify({"raw_response": result})
     else:
         return jsonify({"error": "failed to get response from llm"}), 500

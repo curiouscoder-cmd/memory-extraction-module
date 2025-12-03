@@ -3,117 +3,452 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Companion - Memory & Personality</title>
+    <title>MindMate - Your AI Companion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+            min-height: 100vh;
+            color: #18181b;
+            padding: 40px 20px;
+        }
+
+        .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
         }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
         h1 {
-            color: #333;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #18181b;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
         }
-        .section {
+
+        .tagline {
+            color: #71717a;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .card {
             background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e4e4e7;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
         }
+
+        .card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: #f4f4f5;
+            color: #18181b;
+        }
+
+        .memory-icon, .personality-icon {
+            background: #f4f4f5;
+        }
+
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #18181b;
+            letter-spacing: -0.02em;
+        }
+
+        .hint {
+            color: #71717a;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #52525b;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
         textarea {
             width: 100%;
-            height: 150px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            height: 180px;
+            padding: 16px;
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            border-radius: 8px;
+            color: #18181b;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.5;
             resize: vertical;
+            transition: all 0.2s ease;
         }
+
+        textarea:focus {
+            outline: none;
+            border-color: #18181b;
+            box-shadow: 0 0 0 1px #18181b;
+        }
+
+        textarea::placeholder {
+            color: #a1a1aa;
+        }
+
         input[type="text"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 14px 16px;
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            border-radius: 8px;
+            color: #18181b;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
         }
-        select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #18181b;
+            box-shadow: 0 0 0 1px #18181b;
         }
-        button {
-            background: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
+
+        input[type="text"]::placeholder {
+            color: #a1a1aa;
+        }
+
+        .tone-selector {
+            margin-top: 25px;
+        }
+
+        .tone-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tone-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .tone-option input {
+            display: none;
+        }
+
+        .tone-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            background: #fff;
+            border: 1px solid #e4e4e7;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 10px;
+            transition: all 0.2s ease;
+            text-transform: none;
+            letter-spacing: 0;
+            color: #71717a;
         }
+
+        .tone-option label:hover {
+            border-color: #a1a1aa;
+            color: #18181b;
+        }
+
+        .tone-option input:checked + label {
+            border-color: #18181b;
+            background: #18181b;
+            color: white;
+        }
+        
+        .tone-option input:checked + label .tone-name {
+            color: white;
+        }
+
+        .tone-emoji {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .tone-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: inherit;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #18181b;
+            color: white;
+        }
+
+        .btn-memory, .btn-personality {
+            background: #18181b;
+            color: white;
+        }
+
         button:hover {
-            background: #45a049;
+            background: #27272a;
+            transform: translateY(-1px);
         }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
         .result {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 4px;
-            white-space: pre-wrap;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f4f4f5;
+            border-radius: 12px;
+            display: none;
         }
-        .label {
-            font-weight: bold;
-            margin-bottom: 5px;
+
+        .result.memory-result, .result.personality-result {
+            border-left: none;
         }
-        .hint {
-            color: #666;
-            font-size: 12px;
+
+        .result-section {
+            margin-bottom: 25px;
+        }
+
+        .result-section-title {
+            color: #18181b;
+            font-weight: 600;
+            font-size: 0.9rem;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .result-item {
+            padding: 6px 0;
+            padding-left: 0;
+            color: #52525b;
+            font-size: 0.95rem;
+        }
+
+        .result-item::before {
+            display: none;
+        }
+
+        .result-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #52525b;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #71717a;
+            font-size: 0.9rem;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #e4e4e7;
+            border-top-color: #18181b;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #a1a1aa;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            .tone-options {
+                flex-direction: column;
+            }
+            
+            .tone-option {
+                min-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>AI Companion</h1>
-    
-    <!-- Memory Extraction Section -->
-    <div class="section">
-        <h2>Memory Extraction</h2>
-        <p class="hint">Enter up to 30 messages (one per line) to extract user preferences, emotional patterns, and facts.</p>
-        
-        <div class="label">User Messages:</div>
-        <textarea id="messages" placeholder="Enter messages here, one per line...
-Example:
-I love coffee in the morning
-I've been feeling stressed lately
-I work as a software developer"></textarea>
-        
-        <button onclick="extractMemory()">Extract Memory</button>
-        
-        <div id="memoryResult" class="result" style="display:none;"></div>
-    </div>
-    
-    <!-- Personality Engine Section -->
-    <div class="section">
-        <h2>Personality Engine</h2>
-        <p class="hint">Enter a message and choose a tone to see how the AI responds differently.</p>
-        
-        <div class="label">Your Message:</div>
-        <input type="text" id="userMessage" placeholder="e.g., I'm feeling overwhelmed with work">
-        
-        <div class="label" style="margin-top: 10px;">Choose Tone:</div>
-        <select id="toneSelect">
-            <option value="calm mentor">Calm Mentor</option>
-            <option value="witty friend">Witty Friend</option>
-            <option value="therapist">Therapist</option>
-        </select>
-        
-        <button onclick="applyPersonality()">Apply Personality</button>
-        
-        <div id="personalityResult" class="result" style="display:none;"></div>
+    <div class="container">
+        <header>
+            <h1>MindMate</h1>
+            <p class="tagline">understand yourself better through conversation</p>
+        </header>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon memory-icon">🧠</div>
+                <h2>Memory Extraction</h2>
+            </div>
+            <p class="hint">Paste your chat messages below and let me find patterns in your preferences, emotions, and key facts about you.</p>
+            
+            <label for="messages">Your Messages</label>
+            <textarea id="messages" placeholder="I love coffee in the morning&#10;Been feeling stressed about the deadline&#10;I work as a designer at a startup&#10;Python is my favorite language&#10;..."></textarea>
+            
+            <button class="btn-memory" onclick="extractMemory()">
+                <span>Extract Memories</span>
+            </button>
+            
+            <div id="memoryResult" class="result memory-result"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon personality-icon">✨</div>
+                <h2>Personality Engine</h2>
+            </div>
+            <p class="hint">See how different personalities respond to the same message. Pick a vibe and watch the magic.</p>
+            
+            <label for="userMessage">What's on your mind?</label>
+            <input type="text" id="userMessage" placeholder="I'm feeling overwhelmed with everything going on...">
+            
+            <div class="tone-selector">
+                <label>Choose a vibe</label>
+                <div class="tone-options">
+                    <div class="tone-option">
+                        <input type="radio" name="tone" id="mentor" value="calm mentor" checked>
+                        <label for="mentor">
+                            <span class="tone-emoji">🧘</span>
+                            <span class="tone-name">Calm Mentor</span>
+                        </label>
+                    </div>
+                    <div class="tone-option">
+                        <input type="radio" name="tone" id="friend" value="witty friend">
+                        <label for="friend">
+                            <span class="tone-emoji">😎</span>
+                            <span class="tone-name">Witty Friend</span>
+                        </label>
+                    </div>
+                    <div class="tone-option">
+                        <input type="radio" name="tone" id="therapist" value="therapist">
+                        <label for="therapist">
+                            <span class="tone-emoji">💭</span>
+                            <span class="tone-name">Therapist</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-personality" onclick="applyPersonality()">
+                <span>Transform Response</span>
+            </button>
+            
+            <div id="personalityResult" class="result personality-result"></div>
+        </div>
+
+        <footer>
+            built with curiosity 🌙
+        </footer>
     </div>
 
     <script>
-        // change this to your backend url
         const API_URL = "http://localhost:5000";
+
+        function showLoading(resultDiv) {
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div>thinking...</div>';
+        }
+
+        function renderMemoryResult(data) {
+            let html = '';
+            
+            if (data.preferences && data.preferences.length > 0) {
+                html += '<div class="result-section">';
+                html += '<div class="result-section-title">💜 Preferences</div>';
+                data.preferences.forEach(p => {
+                    html += '<div class="result-item">' + p + '</div>';
+                });
+                html += '</div>';
+            }
+            
+            if (data.emotional_patterns && data.emotional_patterns.length > 0) {
+                html += '<div class="result-section">';
+                html += '<div class="result-section-title">🌊 Emotional Patterns</div>';
+                data.emotional_patterns.forEach(p => {
+                    html += '<div class="result-item">' + p + '</div>';
+                });
+                html += '</div>';
+            }
+            
+            if (data.facts && data.facts.length > 0) {
+                html += '<div class="result-section">';
+                html += '<div class="result-section-title">📌 Key Facts</div>';
+                data.facts.forEach(f => {
+                    html += '<div class="result-item">' + f + '</div>';
+                });
+                html += '</div>';
+            }
+            
+            return html || '<p>No patterns found. Try adding more messages!</p>';
+        }
 
         async function extractMemory() {
             const messagesText = document.getElementById("messages").value;
@@ -125,52 +460,32 @@ I work as a software developer"></textarea>
             }
 
             const resultDiv = document.getElementById("memoryResult");
-            resultDiv.style.display = "block";
-            resultDiv.textContent = "Loading...";
+            showLoading(resultDiv);
 
             try {
                 const response = await fetch(`${API_URL}/extract_memory`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ messages: messages })
                 });
 
                 const data = await response.json();
                 
                 if (data.error) {
-                    resultDiv.textContent = "Error: " + data.error;
+                    resultDiv.innerHTML = '<p style="color: #f5576c;">Error: ' + data.error + '</p>';
+                } else if (data.raw_response) {
+                    resultDiv.innerHTML = '<div class="result-content">' + data.raw_response + '</div>';
                 } else {
-                    let output = "=== Extracted Memory ===\n\n";
-                    
-                    if (data.preferences) {
-                        output += "PREFERENCES:\n";
-                        data.preferences.forEach(p => output += "• " + p + "\n");
-                        output += "\n";
-                    }
-                    
-                    if (data.emotional_patterns) {
-                        output += "EMOTIONAL PATTERNS:\n";
-                        data.emotional_patterns.forEach(p => output += "• " + p + "\n");
-                        output += "\n";
-                    }
-                    
-                    if (data.facts) {
-                        output += "FACTS:\n";
-                        data.facts.forEach(f => output += "• " + f + "\n");
-                    }
-                    
-                    resultDiv.textContent = output;
+                    resultDiv.innerHTML = renderMemoryResult(data);
                 }
             } catch (err) {
-                resultDiv.textContent = "Error connecting to server: " + err.message;
+                resultDiv.innerHTML = '<p style="color: #f5576c;">Could not connect to server</p>';
             }
         }
 
         async function applyPersonality() {
             const message = document.getElementById("userMessage").value;
-            const tone = document.getElementById("toneSelect").value;
+            const tone = document.querySelector('input[name="tone"]:checked').value;
             
             if (!message.trim()) {
                 alert("Please enter a message");
@@ -178,33 +493,40 @@ I work as a software developer"></textarea>
             }
 
             const resultDiv = document.getElementById("personalityResult");
-            resultDiv.style.display = "block";
-            resultDiv.textContent = "Loading...";
+            showLoading(resultDiv);
 
             try {
                 const response = await fetch(`${API_URL}/apply_personality`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ message: message, tone: tone })
                 });
 
                 const data = await response.json();
                 
                 if (data.error) {
-                    resultDiv.textContent = "Error: " + data.error;
+                    resultDiv.innerHTML = '<p style="color: #f5576c;">Error: ' + data.error + '</p>';
                 } else {
-                    let output = "=== Personality Transformation ===\n\n";
-                    output += "YOUR MESSAGE:\n" + data.original_message + "\n\n";
-                    output += "TONE: " + data.tone + "\n\n";
-                    output += "BEFORE (basic response):\n" + data.before + "\n\n";
-                    output += "AFTER (with personality):\n" + data.after;
+                    let html = '';
+                    html += '<div class="result-section">';
+                    html += '<div class="result-section-title">💬 Your Message</div>';
+                    html += '<div class="result-item">' + data.original_message + '</div>';
+                    html += '</div>';
                     
-                    resultDiv.textContent = output;
+                    html += '<div class="result-section">';
+                    html += '<div class="result-section-title">📝 Basic Response</div>';
+                    html += '<div class="result-content" style="padding-left: 20px; color: #71717a;">' + data.before + '</div>';
+                    html += '</div>';
+                    
+                    html += '<div class="result-section">';
+                    html += '<div class="result-section-title">✨ With ' + data.tone.charAt(0).toUpperCase() + data.tone.slice(1) + ' Personality</div>';
+                    html += '<div class="result-content" style="padding-left: 20px; color: #18181b; font-weight: 500;">' + data.after + '</div>';
+                    html += '</div>';
+                    
+                    resultDiv.innerHTML = html;
                 }
             } catch (err) {
-                resultDiv.textContent = "Error connecting to server: " + err.message;
+                resultDiv.innerHTML = '<p style="color: #f5576c;">Could not connect to server</p>';
             }
         }
     </script>
