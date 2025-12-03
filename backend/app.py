@@ -1,14 +1,17 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
 import os
 import requests
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 # get api keys from environment
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBJj5A31sKpnS8dJt2WdGG_7IAVpAlRRDo")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 def call_llm(prompt):
     """simple function to call llm api (tries gemini first, then openai)"""
