@@ -9,49 +9,25 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# get api keys from environment
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 def call_llm(prompt):
-    """simple function to call llm api (tries gemini first, then openai)"""
+    """simple function to call gemini api"""
+    if not GEMINI_API_KEY:
+        return None
     
-    # try gemini first
-    if GEMINI_API_KEY:
-        try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
-            data = {
-                "contents": [{"parts": [{"text": prompt}]}]
-            }
-            response = requests.post(url, json=data)
-            if response.status_code == 200:
-                return response.json()["candidates"][0]["content"]["parts"][0]["text"]
-            else:
-                print(f"Gemini failed: {response.status_code} {response.text}")
-        except Exception as e:
-            print(f"Gemini failed: {e}")
-    
-    # fallback to openai
-    if OPENAI_API_KEY:
-        headers = {
-            "Authorization": f"Bearer {OPENAI_API_KEY}",
-            "Content-Type": "application/json"
-        }
-        
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
         data = {
-            "model": "gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.7
+            "contents": [{"parts": [{"text": prompt}]}]
         }
-        
-        response = requests.post(
-            "https://api.openai.com/v1/chat/completions",
-            headers=headers,
-            json=data
-        )
-        
+        response = requests.post(url, json=data)
         if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"]
+            return response.json()["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            print(f"Gemini failed: {response.status_code} {response.text}")
+    except Exception as e:
+        print(f"Gemini failed: {e}")
     
     return None
 
