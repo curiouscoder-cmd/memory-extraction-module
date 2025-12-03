@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Companion - Memory & Personality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .hint {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Companion</h1>
+    
+    <!-- Memory Extraction Section -->
+    <div class="section">
+        <h2>Memory Extraction</h2>
+        <p class="hint">Enter up to 30 messages (one per line) to extract user preferences, emotional patterns, and facts.</p>
+        
+        <div class="label">User Messages:</div>
+        <textarea id="messages" placeholder="Enter messages here, one per line...
+Example:
+I love coffee in the morning
+I've been feeling stressed lately
+I work as a software developer"></textarea>
+        
+        <button onclick="extractMemory()">Extract Memory</button>
+        
+        <div id="memoryResult" class="result" style="display:none;"></div>
+    </div>
+    
+    <!-- Personality Engine Section -->
+    <div class="section">
+        <h2>Personality Engine</h2>
+        <p class="hint">Enter a message and choose a tone to see how the AI responds differently.</p>
+        
+        <div class="label">Your Message:</div>
+        <input type="text" id="userMessage" placeholder="e.g., I'm feeling overwhelmed with work">
+        
+        <div class="label" style="margin-top: 10px;">Choose Tone:</div>
+        <select id="toneSelect">
+            <option value="calm mentor">Calm Mentor</option>
+            <option value="witty friend">Witty Friend</option>
+            <option value="therapist">Therapist</option>
+        </select>
+        
+        <button onclick="applyPersonality()">Apply Personality</button>
+        
+        <div id="personalityResult" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        // change this to your backend url
+        const API_URL = "http://localhost:5000";
+
+        async function extractMemory() {
+            const messagesText = document.getElementById("messages").value;
+            const messages = messagesText.split("\n").filter(m => m.trim() !== "");
+            
+            if (messages.length === 0) {
+                alert("Please enter some messages");
+                return;
+            }
+
+            const resultDiv = document.getElementById("memoryResult");
+            resultDiv.style.display = "block";
+            resultDiv.textContent = "Loading...";
+
+            try {
+                const response = await fetch(`${API_URL}/extract_memory`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ messages: messages })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    resultDiv.textContent = "Error: " + data.error;
+                } else {
+                    let output = "=== Extracted Memory ===\n\n";
+                    
+                    if (data.preferences) {
+                        output += "PREFERENCES:\n";
+                        data.preferences.forEach(p => output += "• " + p + "\n");
+                        output += "\n";
+                    }
+                    
+                    if (data.emotional_patterns) {
+                        output += "EMOTIONAL PATTERNS:\n";
+                        data.emotional_patterns.forEach(p => output += "• " + p + "\n");
+                        output += "\n";
+                    }
+                    
+                    if (data.facts) {
+                        output += "FACTS:\n";
+                        data.facts.forEach(f => output += "• " + f + "\n");
+                    }
+                    
+                    resultDiv.textContent = output;
+                }
+            } catch (err) {
+                resultDiv.textContent = "Error connecting to server: " + err.message;
+            }
+        }
+
+        async function applyPersonality() {
+            const message = document.getElementById("userMessage").value;
+            const tone = document.getElementById("toneSelect").value;
+            
+            if (!message.trim()) {
+                alert("Please enter a message");
+                return;
+            }
+
+            const resultDiv = document.getElementById("personalityResult");
+            resultDiv.style.display = "block";
+            resultDiv.textContent = "Loading...";
+
+            try {
+                const response = await fetch(`${API_URL}/apply_personality`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: message, tone: tone })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    resultDiv.textContent = "Error: " + data.error;
+                } else {
+                    let output = "=== Personality Transformation ===\n\n";
+                    output += "YOUR MESSAGE:\n" + data.original_message + "\n\n";
+                    output += "TONE: " + data.tone + "\n\n";
+                    output += "BEFORE (basic response):\n" + data.before + "\n\n";
+                    output += "AFTER (with personality):\n" + data.after;
+                    
+                    resultDiv.textContent = output;
+                }
+            } catch (err) {
+                resultDiv.textContent = "Error connecting to server: " + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
